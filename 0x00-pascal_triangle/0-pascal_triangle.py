@@ -9,12 +9,12 @@ def pascal_triangle(n):
     Args:
         n (int): The integer who's list of Pascal's triangle will be printed
     """
-    if n == 0:
+    if n <= 0:
         return []
     elif n == 1:
         return [[1]]
     
-    triangle = [1]
+    triangle = [[1]]
 
     for i in range(1, n):
         row = [1]
