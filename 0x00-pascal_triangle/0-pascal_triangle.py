@@ -2,9 +2,10 @@
 # 0-pascal_triangle
 
 def pascal_triangle(n):
-    """ 
-    A function that returns a list of lists of integers representing the Pascal's
-    triangle up to n rows. The outer list represents each row and the inner list.
+    """
+    A function that returns a list of lists of integers representing
+    the Pascal's triangle up to n rows. The outer list represents
+    each row and the inner list.
 
     Args:
         n (int): The integer who's list of Pascal's triangle will be printed
@@ -15,7 +16,7 @@ def pascal_triangle(n):
     # If n is 1, return a list with a single list containing 1
     elif n == 1:
         return [[1]]
-    
+
     # Initialize the triangle with the first row
     triangle = [[1]]
 
@@ -31,6 +32,6 @@ def pascal_triangle(n):
         row.append(1)
         # Append the row to the triangle
         triangle.append(row)
-    
+
     # Return the triangle
     return triangle
