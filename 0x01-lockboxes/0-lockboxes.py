@@ -1,5 +1,7 @@
-#!/usr/bin/pythn3
+#!/usr/bin/python3
 # 0-lockboxes.py
+
+from collections import deque
 
 
 def canUnlockAll(boxes):
@@ -11,12 +13,12 @@ def canUnlockAll(boxes):
     num_boxes = len(boxes)
     unlocked_boxes = [False] * num_boxes
     unlocked_boxes[0] = True
-    unused_keys = set(boxes[0])
+    unused_keys = deque(boxes[0])
 
     while unused_keys:
         key = unused_keys.pop()
         if key < num_boxes and not unlocked_boxes[key]:
             unlocked_boxes[key] = True
-            unused_keys.update(boxes[key])
+            unused_keys.extend(boxes[key])
 
     return all(unlocked_boxes)
