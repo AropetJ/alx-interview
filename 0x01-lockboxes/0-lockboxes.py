@@ -1,6 +1,8 @@
-from collections import deque
 #!/usr/bin/pythn3
 # 0-lockboxes.py
+
+from collections import deque
+
 
 def canUnlockAll(boxes):
     """A method that determines if all the boxes can be opened
