@@ -14,7 +14,7 @@ def canUnlockAll(boxes):
     unlocked_boxes[0] = True
     unused_keys = deque(boxes[0])
     while unused_keys:
-        key = unused_keys.pop()
+        key = unused_keys.popleft()
         if key < num_boxes and not unlocked_boxes[key]:
             unlocked_boxes[key] = True
             unused_keys.extend(boxes[key])
