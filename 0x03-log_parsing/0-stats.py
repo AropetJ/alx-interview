@@ -1,7 +1,6 @@
-#!/usr/bin/env python3
+#!/usr/bin/python3
 """
-This script reads from the standard input, parses the input for specific HTTP status codes,
-and prints statistics about the parsed data.
+0-stats.py
 """
 
 import sys
@@ -14,7 +13,8 @@ line_count = 0
 
 def signal_handler(signal, frame):
     """
-    Handles the SIGINT signal by printing the statistics and exiting the program.
+    Handles the SIGINT signal by printing the statistics and
+    exiting the program.
     """
     print_statistics()
     sys.exit(0)
