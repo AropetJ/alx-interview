@@ -1,68 +1,72 @@
 #!/usr/bin/python3
-"""
-0-stats.py
-"""
-
-import sys
-import signal
-
-total_size = 0
-status_codes = {}
-line_count = 0
+import re
 
 
-def signal_handler(signal, frame):
-    """
-    Handles the SIGINT signal by printing the statistics and
-    exiting the program.
-    """
-    print_statistics()
-    sys.exit(0)
+def extract_input(input_line):
+    fp = (
+        r"\s*(?P<ip>\S+)\s*",
+        r"\s*\[(?P<date>\d+\-\d+\-\d+ \d+:\d+:\d+\.\d+)\]",
+        r"\s*\"(?P<request>[^\"]*)\"\s*",
+        r"\s*(?P<status_code>\S+)",
+        r"\s*(?P<file_size>\d+)"
+    )
+    info = {
+        "status_code": 0,
+        "file_size": 0,
+    }
+    log_fmt = "{}\\-{}{}{}{}\\s*".format(fp[0], fp[1], fp[2], fp[3], fp[4])
+    resp_match = re.fullmatch(log_fmt, input_line)
+    if resp_match:
+        status_code = resp_match.group("status_code")
+        file_size = int(resp_match.group("file_size"))
+        info["status_code"] = status_code
+        info["file_size"] = file_size
+    return info
 
 
-def print_statistics():
-    """
-    Prints the total size and the count of each status code.
-    """
-    print(f"File size: {total_size}")
-    for status in sorted(status_codes.keys()):
-        print(f"{status}: {status_codes[status]}")
+def print_statistics(total_file_size, status_codes_stats):
+    print(f"File size: {total_file_size}", flush=True)
+    for status_code in sorted(status_codes_stats):
+        num = status_codes_stats.get(status_code, 0)
+        if num > 0:
+            print(f"{status_code}: {num}", flush=True)
 
 
-signal.signal(signal.SIGINT, signal_handler)
+def update_metrics(line, total_file_size, status_codes_stats):
+    line_info = extract_input(line)
+    status_code = line_info.get("status_code", "0")
+    if status_code in status_codes_stats:
+        status_codes_stats[status_code] += 1
+    return total_file_size + line_info["file_size"]
 
 
-def main():
-    """
-    Main function that reads from the standard input and parses the input.
-    """
-    global total_size, status_codes, line_count
-
+def run():
+    line_num = 0
+    total_file_size = 0
+    status_codes_stats = {
+        "200": 0,
+        "301": 0,
+        "400": 0,
+        "401": 0,
+        "403": 0,
+        "404": 0,
+        "405": 0,
+        "500": 0,
+    }
     try:
-        for line in sys.stdin:
-            parts = line.split('"')
-            if len(parts) == 3:
-                ip, rest = parts[0].split(' - ')
-                method, url, rest = parts[1].split(' ')
-                status, size = parts[2].split()[-2:]
-
-                if url == "/projects/260" and method == "GET":
-                    try:
-                        size = int(size)
-                        total_size += size
-                        status = int(status)
-                        if status in [200, 301, 400, 401, 403, 404, 405, 500]:
-                            status_codes[status] = status_codes.get(status, 0) + 1
-                    except ValueError:
-                        pass
-
-            line_count += 1
-            if line_count % 10 == 0:
-                print_statistics()
-    except KeyboardInterrupt:
-        print_statistics()
-        sys.exit(0)
+        while True:
+            line = input()
+            total_file_size = update_metrics(
+                line,
+                total_file_size,
+                status_codes_stats,
+            )
+            line_num += 1
+            if line_num % 10 == 0:
+                print_statistics(total_file_size, status_codes_stats)
+    except (KeyboardInterrupt, EOFError):
+        print_statistics(total_file_size, status_codes_stats)
 
 
 if __name__ == "__main__":
-    main()
+    run()
