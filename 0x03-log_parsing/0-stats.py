@@ -3,7 +3,7 @@
 import re
 
 
-def extract_input(input_line):
+def input_parser(input_line):
     fp = (
         r"\s*(?P<ip>\S+)\s*",
         r"\s*\[(?P<date>\d+\-\d+\-\d+ \d+:\d+:\d+\.\d+)\]",
@@ -34,7 +34,7 @@ def print_statistics(total_file_size, status_codes_stats):
 
 
 def update_metrics(line, total_file_size, status_codes_stats):
-    line_info = extract_input(line)
+    line_info = input_parser(line)
     status_code = line_info.get("status_code", "0")
     if status_code in status_codes_stats:
         status_codes_stats[status_code] += 1
