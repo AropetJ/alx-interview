@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """UTF-8 Validation
 """
+from ast import List
 
 
 def validUTF8(data):
@@ -10,20 +11,36 @@ def validUTF8(data):
     Returns:
         True if data is a valid UTF-8 encoding, else return False"""
     count = 0
-    for num in data:
-        if count == 0:
-            if (num >> 7) == 0b0:
-                count = 0
-            elif (num >> 5) == 0b110:
-                count = 1
-            elif (num >> 4) == 0b1110:
-                count = 2
-            elif (num >> 3) == 0b11110:
-                count = 3
+    n = len(data)
+    for i in range(n):
+        if count > 0:
+            count -= 1
+            continue
+        if not (0 <= data[i] <= 0x10ffff):
+            return False
+        elif data[i] <= 0x7f:
+            count = 0
+        elif data[i] & 0b11111000 == 0b11110000:
+            span = 4
+            if n - i >= span and all(data[j] & 0b11000000 == 0b10000000
+                                     for j in range(i + 1, i + span)):
+                count = span - 1
+            else:
+                return False
+        elif data[i] & 0b11110000 == 0b11100000:
+            span = 3
+            if n - i >= span and all(data[j] & 0b11000000 == 0b10000000
+                                     for j in range(i + 1, i + span)):
+                count = span - 1
+            else:
+                return False
+        elif data[i] & 0b11100000 == 0b11000000:
+            span = 2
+            if n - i >= span and all(data[j] & 0b11000000 == 0b10000000
+                                     for j in range(i + 1, i + span)):
+                count = span - 1
             else:
                 return False
         else:
-            if (num >> 6) != 0b10:
-                return False
-            count -= 1
-    return count == 0
+            return False
+    return True
