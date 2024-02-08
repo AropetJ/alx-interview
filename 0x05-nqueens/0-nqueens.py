@@ -19,12 +19,17 @@ def solve_n_queens(N):
         defined for N less than 4.
         TypeError: If N is not an integer.
     """
+    if len(sys.argv) != 2:
+        print("Usage: nqueens N")
+        sys.exit(1)
+    try:
+        N = int(sys.argv[1])
+    except Exception:
+        print("N must be a number")
+        sys.exit(1)
     if N < 4:
-        print('N must be at least 4')
-        exit(1)
-    elif not isinstance(N, int):
-        print('N must be a number')
-        exit(1)
+        print("N must be at least 4")
+        sys.exit(1)
 
     solutions = []
     position = []
