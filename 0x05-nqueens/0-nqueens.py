@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 '''0-nqueens.py
+usage: 0-nqueens.py N
 '''
 import sys
 
@@ -19,9 +20,11 @@ def solve_n_queens(N):
         TypeError: If N is not an integer.
     """
     if N < 4:
-        raise ValueError('N must be at least 4')
+        print('N must be at least 4')
+        exit(1)
     elif not isinstance(N, int):
-        raise TypeError('N must be a number')
+        print('N must be a number')
+        exit(1)
 
     solutions = []
     position = []
