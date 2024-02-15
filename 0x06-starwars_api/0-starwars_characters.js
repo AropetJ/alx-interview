@@ -1,19 +1,30 @@
 #!/usr/bin/node
-const request = require('request')
-const movieId = process.argv[2]
-const API_URL = `https://swapi.dev/api/films/${movieId}/`
+const request = require('request');
+const API_URL = 'https://swapi-api.hbtn.io/api';
 
-request(API_URL, (error, response, body) => {
-  if (error || response.statusCode !== 200) {
-    console.error('Error:', error || `Invalid status code: ${response.statusCode}`)
-    return
-  }
-  const charactersURL = JSON.parse(body).characters
-  Promise.all(charactersURL.map(url => new Promise((resolve, reject) =>
-    request(url, (error, _, body) =>
-      error ? reject(error) : resolve(JSON.parse(body).name)
-    )
-  )))
-    .then(names => console.log(names.join('\n')))
-    .catch(error => console.error(error))
-})
+if (process.argv.length > 2) {
+  const movieId = process.argv[2];
+  request(`${API_URL}/films/${movieId}/`, (err, _, body) => {
+    if (err) {
+      console.error(err);
+      return;
+    }
+    const movie = JSON.parse(body);
+    const characterURL = movie.characters;
+    const getCharacterNamePromises = characterURL.map(characterURL => {
+      return new Promise((resolve, reject) => {
+        request(characterURL, (error, _, characterBody) => {
+          if (error) {
+            reject(error);
+            return;
+          }
+          const character = JSON.parse(characterBody);
+          resolve(character.name);
+        });
+      });
+    });
+    Promise.all(getCharacterNamePromises)
+      .then(characterNames => console.log(characterNames.join('\n')))
+      .catch(error => console.error(error));
+  });
+}
