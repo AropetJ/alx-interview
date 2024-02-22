@@ -1,10 +1,10 @@
 #!/usr/bin/python3
-"""0-ratate_2d_matrix.py
+"""0-ratate_2d_matrix.py.
 """
 
 
 def rotate_2d_matrix(matrix):
-    """Rotates a 2D matrix 90 degrees clockwise
+    """Rotates a 2D matrix 90 degrees clockwise.
     """
     if len(matrix) <= 0:
         return
