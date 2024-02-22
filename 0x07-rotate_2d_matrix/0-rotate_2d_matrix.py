@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 """0-ratate_2d_matrix.py.
 """
 
@@ -6,6 +6,7 @@
 def rotate_2d_matrix(matrix):
     """Rotates a 2D matrix 90 degrees clockwise.
     """
+
     if len(matrix) <= 0:
         return
     if type(matrix) != list:
@@ -14,6 +15,6 @@ def rotate_2d_matrix(matrix):
         return
     for i in range(len(matrix)):
         for j in range(i + 1, len(matrix)):
-            matrix[i][j], matrix[j][i] = matrix[j][i], matrix[i][j]
+            (matrix[i][j], matrix[j][i]) = (matrix[j][i], matrix[i][j])
     for i in range(len(matrix)):
         matrix[i] = matrix[i][::-1]
