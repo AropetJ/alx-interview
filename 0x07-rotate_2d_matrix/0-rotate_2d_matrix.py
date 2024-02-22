@@ -9,7 +9,7 @@ def rotate_2d_matrix(matrix):
 
     if len(matrix) <= 0:
         return
-    if type(matrix) != list:
+    if not isinstance(matrix, list):
         return
     if not all(isinstance(row, list) for row in matrix):
         return
