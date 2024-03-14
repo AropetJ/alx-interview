@@ -11,19 +11,20 @@ def isWinner(x, nums):
     Returns:
         str: The name of the winner ("Ben" or "Maria").
     """
-    if not nums or x < 1:
+    if x < 1 or not nums:
         return None
+    marias_wins, bens_wins = 0, 0
     n = max(nums)
-    primes = [False, False] + [True for i in range(n - 1)]
-    for i in range(2, int(n ** 0.5) + 1):
-        if primes[i]:
+    primes = [True for _ in range(1, n + 1, 1)]
+    primes[0] = False
+    for i in range(2, int(n**0.5) + 1):
+        if primes[i - 1]:
             for j in range(i * i, n + 1, i):
-                primes[j] = False
-    primes = [i for i, prime in enumerate(primes) if prime]
-    primes = primes[1:]
-    count = 0
-    for i in nums:
-        count += sum([1 for prime in primes if prime <= i])
-    if count % 2 == 0:
-        return "Ben"
-    return "Maria"
+                primes[j - 1] = False
+    for _, n in zip(range(x), nums):
+        primes_count = len(list(filter(lambda x: x, primes[0: n])))
+        bens_wins += primes_count % 2 == 0
+        marias_wins += primes_count % 2 == 1
+    if marias_wins == bens_wins:
+        return None
+    return 'Maria' if marias_wins > bens_wins else 'Ben'
